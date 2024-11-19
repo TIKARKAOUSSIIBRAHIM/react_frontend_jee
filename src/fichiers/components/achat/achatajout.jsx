@@ -5,7 +5,7 @@ import axios_client from "../../config/host-app";
 function InsertAchat({ show, handleClose, onAchatAdded }) {
     const [listProduit, setListProduit] = useState([]);
     const [listFournisseur, setListFournisseur] = useState([]);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); // State to hold error messages
 
     const [newAchat, setNewAchat] = useState({
         produitId: '',
@@ -34,13 +34,18 @@ function InsertAchat({ show, handleClose, onAchatAdded }) {
 
     const handleAddAchat = async () => {
         try {
+            // Reset error message before submission
+            setErrorMessage('');
+            
             const response = await axios_client.post('/achat/achat/add', newAchat);
             onAchatAdded(response.data); // Notify parent about new achat
-            
+
+            // Reset the form after successful submission
             setNewAchat({ produitId: '', fournisseurId: '', quantite: '', date: '' });
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setErrorMessage(error.response.data.error);
+            if (error.response.status === 500) {
+                // Display specific error message returned by the backend
+                setErrorMessage("Quantité demandée supérieure à la quantité disponible");
             } else {
                 console.error("Error adding achat:", error);
             }
@@ -54,6 +59,7 @@ function InsertAchat({ show, handleClose, onAchatAdded }) {
 
     return (
         <>
+            <h3>Ajouter un Achat</h3>
             <Form>
                 <Form.Group>
                     <Form.Label>Produit</Form.Label>
@@ -94,6 +100,9 @@ function InsertAchat({ show, handleClose, onAchatAdded }) {
                         value={newAchat.quantite} 
                         onChange={(e) => setNewAchat({ ...newAchat, quantite: e.target.value })}
                     />
+                    {errorMessage && (
+                        <div style={{ color: 'red', marginTop: '5px' }}>{errorMessage}</div>
+                    )}
                 </Form.Group>
 
                 <Form.Group>
@@ -104,10 +113,6 @@ function InsertAchat({ show, handleClose, onAchatAdded }) {
                         onChange={(e) => setNewAchat({ ...newAchat, date: e.target.value })}
                     />
                 </Form.Group>
-
-                {errorMessage && (
-                    <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>
-                )}
             </Form>
             <Button variant="secondary" onClick={handleClose}>
                 Annuler

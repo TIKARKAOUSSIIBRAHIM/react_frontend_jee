@@ -12,7 +12,7 @@ import Fournisseurs from './fichiers/components/fournisseur/fournisseur';
 import InsertFournisseur from './fichiers/components/fournisseur/fournisseurajout';
 import Achats from './fichiers/components/achat/achat';
 import InsertAchat from './fichiers/components/achat/achatajout';
-
+import RegisterPage from './fichiers/components/connect/RegisterPage';
 function App() {
   return (
     <Router>
@@ -33,6 +33,7 @@ function App() {
 
       <Container>
         <Routes>
+  
           <Route path="/produits" element={<Fragment><Produits /></Fragment>}  />
           <Route path="/fournisseurs" element={<Fragment><Fournisseurs /></Fragment>} />
           <Route path="/achats" element={<Fragment><Achats /></Fragment>}  />
